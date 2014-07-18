@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('NG-Point', []);
+var app = angular.module('anglpoint-app', []);
 
 /*	controller provides data to app
 	@ requires enableCaching, listName, siteUrl, restParams
