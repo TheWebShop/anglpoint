@@ -1,18 +1,17 @@
-app.controller('ListCtrl', ['$scope', '$q', 'DataService', 'FillService', function($scope, $q, DataService, FillService) {
-
-	// the following 4 variables must be initialized by user
-	var enableCaching = true; // set to true to enable caching
-	var listName = "Some List"; // List name exactly as created in SharePoint
-	var siteUrl = "/some/site/url"; // relative site URL
-	var restParams = ""; // parameters for REST operation
-
-	var restUrl = siteUrl + "/_vti_bin/listdata.svc/" + listName.replace(/\s+/g, '') + restParams;
-	$scope.dataSet = []; // bucket to hold data for stage
-
-	var promises = DataService.getData(listName, siteUrl, enableCaching, restUrl);
-
-	$q.all(promises).then(function(res) {
-		$scope.dataSet = FillService.fillData(res[0], enableCaching, restUrl, res[1], res[2]);
-	});
-
+appControllers.controller('ListCtrl', ['$scope', '$q', 'DataService', 'FillService', function($scope, $q, DataService, FillService) {
+	
+	// data bucket
+	$scope.dataSet = [];
+	
+	// iterate over all models and fill data bucket
+	for(var i = 0; i < models.length; i++) {
+		var model = models[i].item;
+		var restUrl = model.siteUrl + "/_vti_bin/listdata.svc/" + model.listName.replace(/\s+/g, '') + model.restParams;
+		var promises = DataService.getData(model.listName, model.siteUrl, model.enableCaching, restUrl);
+		$q.all(promises).then(function(res) {
+			FillService.fillData(res[0], model.enableCaching, restUrl, res[1], res[2]).then(function(result) {
+				$scope.dataSet = $scope.dataSet.concat(result);
+			});
+		});
+	}
 }]);
