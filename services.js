@@ -60,7 +60,7 @@ appServices.service('CacheService', [function() {
 	
 /*	fills data into an array, cache if enabled
 	@ function: fillData(data object, cache flag, cache reference, data date, data validity)
-	return array containing data	
+	return promise resolving to data array	
 */
 appServices.service('FillService', ['$q', 'CacheService', function($q, CacheService) {
 	this.fillData = function(data, cache, ref, date, flag) {
